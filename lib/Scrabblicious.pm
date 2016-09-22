@@ -44,7 +44,10 @@ sub startup {
 
   # Plugins
   $self->plugin($_) for qw/Config Restify/;
-  $self->plugin("Scrabblicious::Plugin::$_") for qw/API/;
+  $self->plugin("Scrabblicious::Plugin::$_") for qw/API Hooks/;
+
+  # Hooks
+  # See Scrabblicious::Plugin::Hooks
 
   # Router
   my $r = $self->routes;
