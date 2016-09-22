@@ -1,4 +1,4 @@
-# mojolicious-plugin-restify-example
+# mojolicious-plugin-restify-example [![Build Status](https://travis-ci.org/kwakwaversal/mojolicious-plugin-restify-example.svg?branch=master)](https://travis-ci.org/kwakwaversal/mojolicious-plugin-restify-example)
 An example of using my Mojolicious::Plugin::Restify CPAN distribution.
 
 # Description
