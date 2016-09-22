@@ -53,6 +53,10 @@ Vagrant.configure("2") do |config|
   SHELL
 
   # Provisioning with a shell script as a non-privileged user.
+  #
+  # I've written this so it will provision a fresh install, so running `vagrant
+  # provision` will be destructive to an already provisioned machine. The upside
+  # is it allows you to refresh the build without recreating the guest.
   config.vm.provision "shell", privileged: false, inline: <<-'SHELL'
     sudo su -c 'dropdb scrabblicious --if-exists' postgres
     sudo su -c 'psql -tc "DROP USER IF EXISTS vagrant"' postgres
