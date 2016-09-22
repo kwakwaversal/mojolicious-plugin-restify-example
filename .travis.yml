@@ -11,7 +11,7 @@ before_install:
   - sudo apt-get install -y postgresql-server-dev-all
   - sudo su -c 'psql -tc "CREATE USER vagrant WITH PASSWORD \$\$password\$\$"' postgres
   - sudo su -c 'psql -tc "CREATE DATABASE scrabblicious OWNER=vagrant"' postgres
-  - sudo su -c 'psql scrabblicious < $TRAVIS_BUILD_DIR/migrations/scrabblicious.sql' vagrant
+  - sudo su -c 'PGPASSWORD=password psql -U vagrant -h localhost scrabblicious < $TRAVIS_BUILD_DIR/migrations/scrabblicious.sql' postgres
   - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.development.conf
   - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.production.conf
 script:

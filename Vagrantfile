@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
     sudo su -c 'psql -tc "DROP USER IF EXISTS vagrant"' postgres
     sudo su -c 'psql -tc "CREATE USER vagrant WITH PASSWORD \$\$password\$\$"' postgres
     sudo su -c 'psql -tc "CREATE DATABASE scrabblicious OWNER=vagrant"' postgres
-    sudo su -c 'psql scrabblicious < /home/vagrant/restify/migrations/scrabblicious.sql' vagrant
+    sudo su -c 'PGPASSWORD=password psql -U vagrant -h localhost scrabblicious < /home/vagrant/restify/migrations/scrabblicious.sql' postgres
     cp -a ~/restify/scrabblicious.sample.conf ~/restify/scrabblicious.development.conf
     cp -a ~/restify/scrabblicious.sample.conf ~/restify/scrabblicious.production.conf
   SHELL
