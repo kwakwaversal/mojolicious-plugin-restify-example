@@ -16,9 +16,9 @@ before_install:
   - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.production.conf
 install:
   - cpanm -n Carton
-  - carton install --deployment --cached  
+  - carton install --deployment --cached
 script:
-  - prove -rl
+  - carton exec prove -rl
 after_failure: "cat /home/travis/.cpanm/work/*/build.log"
 notifications:
   email: true
