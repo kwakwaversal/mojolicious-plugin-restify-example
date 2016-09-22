@@ -1,0 +1,128 @@
+% layout 'default';
+% title 'Scrabblicious | Player detail';
+
+<section class="row" id="statistics">
+  <div>
+    <h2><i class="fa fa-bar-chart"></i> Player overview </h2>
+  </div>
+
+  <div class="row">
+    <!-- Stat icons -->
+    <div class="col-xs-12 col-sm-6 col-md-3">
+      <div class="mini-stat clearfix bg-blue rounded">
+        <span class="mini-stat-icon"><i class="fa fa-check fg-blue"></i></span>
+        <div class="mini-stat-info">
+            <span class="stat"><%= $player->vw_scoreboard->wins %></span>
+            <p>Total wins</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3">
+      <div class="mini-stat clearfix bg-light-blue rounded">
+        <span class="mini-stat-icon"><i class="fa fa-close fg-light-blue"></i></span>
+        <div class="mini-stat-info">
+            <span class="stat"><%= $player->vw_scoreboard->losses %></span>
+            <p>Total losses</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3">
+      <div class="mini-stat clearfix bg-red rounded">
+        <span class="mini-stat-icon"><i class="fa fa-percent fg-red"></i></span>
+        <div class="mini-stat-info">
+            <span class="stat"><%= $player->vw_scoreboard->avg_score %></span>
+            <p>Average score</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3">
+      <div class="mini-stat clearfix bg-green rounded">
+        <span class="mini-stat-icon"><i class="fa fa-trophy fg-green"></i></span>
+        <div class="mini-stat-info">
+          <span class="stat"><%= $player->vw_scoreboard->max_score %></span>
+            <p>Highest score</p>
+        </div>
+      </div>
+    </div>
+    <!-- Stat icons end -->
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="well col-md-6">
+        <h3>Hello, <%= $player->forename %>!</h3>
+        <p>Joined: <%= $player->created %></p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+      </div>
+      <div class="well col-md-6">
+        % if (stash 'highscore') {
+          <h3>Highest score</h3>
+          % if ($highscore->winner_id eq $player->id) {
+            <p>Scored: <%= $highscore->winner_score %></p>
+            <p>Opponent: <%= $highscore->loser->nickname %> (game was won)</p>
+            <p>Played: <%= $highscore->finished %></p>
+          % }
+          % else {
+            <p>Scored: <%= $highscore->loser_score %></p>
+            <p>Opponent: <%= $highscore->winner->nickname %> (game was lost)</p>
+            <p>Played: <%= $highscore->finished %></p>
+          % }
+        % }
+        % else {
+          <h3>Highest score</h3>
+          <p>Your high score has not been set yet. Play some games!</p>
+        % }
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="row">
+  <h2><i class="fa fa-edit"></i> Edit player</h2>
+
+%= form_for '' => (method => 'POST') => begin
+  <div class="col-md-12">
+    <div class="row">
+      <div class="form-group col-md-6">
+      %= label_for forename => 'Forename'
+      <br>
+      %= text_field forename => $player->forename, class => 'form-control'
+      </div>
+
+      <div class="form-group col-md-6">
+      %= label_for surname => 'Surname'
+      <br>
+      %= text_field surname => $player->surname, class => 'form-control'
+      </div>
+
+      <div class="form-group col-md-6">
+      %= label_for nickname => 'Nickname'
+      <br>
+      %= text_field nickname => $player->nickname, class => 'form-control'
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-6">
+      %= label_for tel_no => 'Tel no'
+      <br>
+      %= text_field tel_no => $player->tel_no, class => 'form-control'
+      </div>
+
+      <div class="form-group col-md-6">
+      %= label_for email => 'E-mail'
+      <br>
+      %= text_field email => $player->email, class => 'form-control'
+      </div>
+    </div>
+
+    <div class="form-group">
+      %= submit_button 'Submit',  class => 'btn btn-primary pull-right'
+    </div>
+  </div>
+% end
+</div>

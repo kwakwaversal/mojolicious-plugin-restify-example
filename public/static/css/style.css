@@ -1,0 +1,135 @@
+html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p,
+blockquote, pre,, abbr, acronym, address, big, cite, code,del, dfn, em, img,
+ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i,
+center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption,
+tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup, menu, nav, output, ruby,
+section, summary,time, mark, audio, video {
+margin: 0;  padding: 0; border: 0;  font-size: 100%;  font: inherit;
+vertical-align: baseline;}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu,
+nav, section { display: block;}
+body {  line-height: 1;}
+ol, ul {  list-style: none;}
+blockquote, q { quotes: none;}
+blockquote:before, blockquote:after,q:before,
+ q:after { content: '';  content: none;}
+table { border-collapse: collapse;  border-spacing: 0;}
+
+.navbar {
+    border-radius: 0px;
+    border: 0px;
+}
+.navbar-header > a {
+  color: #F9F9F9;
+  text-decoration: none;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #F9F9F9;
+  border: 5px solid transparent;
+  margin: 0px;
+  padding: 20px 10px;
+}
+.navbar-default {
+  background-color: #00C1E4;
+  border-color: #F9F9F9;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #F9F9F9;
+  border-radius: 0px;
+  border-bottom: 5px solid #F9F9F9;
+}
+
+/* Player CSS stats */
+.rounded {
+  -moz-border-radius: 3px !important;
+  -webkit-border-radius: 3px;
+  border-radius: 3px !important;
+}
+.rounded:after, .rounded:before {
+  -moz-border-radius: 3px !important;
+  -webkit-border-radius: 3px;
+  border-radius: 3px !important;
+}
+.mini-stat {
+  padding: 15px;
+  margin-bottom: 5px;
+}
+.bg-blue {
+  background-color: #3b5998 !important;
+  border: 1px solid #3b5998;
+  color: white;
+}
+.bg-light-blue {
+  background-color: #00a0d1 !important;
+  border: 1px solid #00a0d1;
+  color: white;
+}
+.bg-dark-blue {
+  background-color: #205081 !important;
+  border: 1px solid #205081;
+  color: white;
+}
+.bg-red {
+  background-color: #db4a39 !important;
+  border: 1px solid #db4a39;
+  color: white;
+}
+.bg-green {
+  background-color: #6B9816 !important;
+  border: 1px solid #6B9816;
+  color: white;
+}
+.bg-blue a, .bg-blue i, .bg-blue span, .bg-blue small, .bg-blue p,
+.bg-light-blue a, .bg-light-blue i, .bg-light-blue span, .bg-light-blue small, .bg-light-blue p,
+.bg-dark-blue a, .bg-dark-blue i, .bg-dark-blue span, .bg-dark-blue small, .bg-dark-blue p,
+.bg-red a, .bg-red i, .bg-red span, .bg-red small, .bg-red p,
+.bg-green a, .bg-green i, .bg-green span, .bg-green small, .bg-green p {
+  color: white;
+}
+.mini-stat-icon {
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  line-height: 60px;
+  text-align: center;
+  font-size: 30px;
+  background: none repeat scroll 0% 0% #fff;
+  border-radius: 100%;
+  float: left;
+  margin-right: 10px;
+  color: #FFF;
+}
+.mini-stat-info {
+  font-size: 12px;
+  padding-top: 2px;
+}
+.bg-blue a, .bg-blue i, .bg-blue span, .bg-blue small, .bg-blue p {
+  color: white;
+}
+.mini-stat-info span {
+  display: block;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  margin-top: 7px;
+  line-height: 1;
+}
+.fg-blue {
+  color: #3b5998 !important;
+}
+.fg-light-blue {
+  color: #00a0d1 !important;
+}
+.fg-dark-blue {
+  color: #205081 !important;
+}
+.fg-red {
+  color: #db4a39 !important;
+}
+.fg-green {
+  color: #6B9816 !important;
+}
+/* Player CSS stats end */

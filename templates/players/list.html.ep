@@ -1,0 +1,65 @@
+% layout 'default';
+% title 'Scrabblicious | Because players like to play with words';
+
+<div class="row">
+  <div class="col-md-2">
+    <h4>Players</h4>
+  </div>
+
+  <div class="col-md-10">
+    <div class="input-group pull-right">
+      <div class="btn-group pull-right" role="group" aria-label="page">
+
+      % if ($pager->previous_page) {
+      <button type="button" class="btn btn-default"><a href="<%= url_for()->query(page => $pager->previous_page) %>"><span aria-hidden="true">&larr;</span> Previous</a></button>
+      % }
+
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-send-o"></i> Goto page
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+        %  for my $i (1 .. $pager->last_page) {
+          <li><a href="<%= url_for()->query({ page => $i }) %>"><%= $i %></a></li>
+        % }
+        </ul>
+      </div>
+
+      % if ($pager->next_page) {
+      <button type="button" class="btn btn-default"><a href="<%= url_for()->query(page => $pager->next_page) %>">Next <span aria-hidden="true">&rarr;</span></a></button>
+      % }
+
+      </div>
+    </div><!-- /input-group -->
+  </div>
+</div>
+
+<br>
+
+<table class="table table-hover table-condensed table-responsive table-bordered">
+<thead>
+  <tr class="active">
+    <th class="col-md-3">ID</th>
+    <th class="col-md-1">Forename</th>
+    <th class="col-md-1">Surname</th>
+    <th class="text-center">Nickname</th>
+    <th class="text-center">Added</th>
+    <th class="text-center">Actions</th>
+  </tr>
+</thead>
+<tbody class="list">
+  % for my $player (@$players) {
+  <tr>
+      <td class="id"> <%= $player->id %> </td>
+      <td> <%= $player->forename %> </a> </td>
+      <td> <%= $player->surname %> </a> </td>
+      <td class="text-center info"> <%= lc $player->nickname %> </td>
+      <td class="text-center"> <%= substr($player->created, 0, 16) %> </td>
+      <td class="text-center">
+        <a href="<%= url_for 'players_update', players_id => $player->id %>" class="label label-default" data-toggle="modal"><i class="fa fa-pencil"></i> View / edit</a>
+      </td>
+  </tr>
+  % }
+</tbody>
+</table>
