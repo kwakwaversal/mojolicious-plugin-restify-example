@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/home/vagrant/restify"
 
   # Don't bother mounting /vagrant folder as it's being synched above anyway.
-  config.vm.synced_folder '.', "/vagrant", :disabled => true
+  config.vm.synced_folder ".", "/vagrant", :disabled => true
 
   # Provisioning with a shell script as a privileged user.
   config.vm.provision "shell", inline: <<-'SHELL'
