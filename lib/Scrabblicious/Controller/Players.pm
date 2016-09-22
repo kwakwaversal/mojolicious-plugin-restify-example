@@ -23,21 +23,21 @@ sub list {
     return 1;
   }
 
-  my $players = $c->db->resultset('Player')->search(
-    {'me.status' => {'=' => [qw/A/]},},
+  my $players = $c->db->resultset('Player')->list(
     {
-      order_by => {-asc => [qw/me.nickname/]},
+      search   => {'me.status' => {'=' => [qw/Active/]}},
       page     => $c->api->page,
-      rows     => $c->api->per_page,
+      per_page => $c->api->per_page,
     }
   );
+  $c->stash(players => [$players->all]);
   $c->api->pager($players->pager);
 
-  # Here we respond to JSON or default to HTML (we're RESTy!)
+  # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
   $c->respond_to(
-    json => {json => {players => [$players->all]}},
+    json => {json => {players => $c->stash->{players}}},
     any  => {
-      players  => [$players->all],
+      players  => $c->stash->{players},
       format   => 'html',
       template => 'players/list'
     }

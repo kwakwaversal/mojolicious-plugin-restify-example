@@ -5,3 +5,4 @@
   - Added before_render hook to intercepts JSON output.
   - Adding .travis.yml. Fixes #1
   - Making generate_schema into its own Mojolicious command.
+  - Added BaseResultSet for abstracting ResultSet lookups.
