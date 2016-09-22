@@ -12,7 +12,10 @@ sub register {
       my ($c, $args) = @_;
 
       # If client is requesting JSON, customise the output to suit our needs.
-      if ($c->stash('format') && $c->stash('format') eq 'json') {
+      if ( exists $args->{json}
+        && exists $c->stash->{'format'}
+        && $c->stash->{'format'} eq 'json')
+      {
 
         # Don't expose information if there's an error in the JSON output (the
         # errors hash key is not a Mojo convention).
