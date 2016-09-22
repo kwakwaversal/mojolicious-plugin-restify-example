@@ -84,6 +84,9 @@ Scrabblicious::Plugin::Hooks - Hook into stuff, yo!
 
 L<Scrabblicious::Plugin::Hooks> is home to project-specific hooks.
 
+The primary reason this has been created is to hook into C<before_render> to
+mangle to the JSON before it is being rendered.
+
 =head1 METHODS
 
 L<Scrabblicious::Plugin::Hooks> inherits all methods from L<Mojolicious::Plugin>
