@@ -26,6 +26,7 @@ __PACKAGE__->table_class("DBIx::Class::ResultSource::View");
 =cut
 
 __PACKAGE__->table("vw_scoreboard");
+__PACKAGE__->result_source_instance->view_definition(" SELECT p.players_id,\n    count(*) AS games,\n    sum(\n        CASE\n            WHEN (p.players_id = g.winner_id) THEN 1\n            ELSE 0\n        END) AS wins,\n    sum(\n        CASE\n            WHEN (p.players_id = g.loser_id) THEN 1\n            ELSE 0\n        END) AS losses,\n    (avg(\n        CASE\n            WHEN (p.players_id = g.winner_id) THEN g.winner_score\n            WHEN (p.players_id = g.loser_id) THEN g.loser_score\n            ELSE 0\n        END))::integer AS avg_score,\n    max(\n        CASE\n            WHEN (p.players_id = g.winner_id) THEN g.winner_score\n            WHEN (p.players_id = g.loser_id) THEN g.loser_score\n            ELSE 0\n        END) AS max_score\n   FROM (players p\n     JOIN games g ON (((p.players_id = g.winner_id) OR (p.players_id = g.loser_id))))\n  GROUP BY p.players_id");
 
 =head1 ACCESSORS
 
@@ -78,8 +79,8 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07045 @ 2016-09-01 23:58:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fLpZlBjcWZcZtIoWdB4nOQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2016-09-22 20:35:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TP0fkGQcFe3Q3lss3lJOSw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

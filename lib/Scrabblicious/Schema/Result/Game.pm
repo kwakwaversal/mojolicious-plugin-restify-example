@@ -41,7 +41,7 @@ __PACKAGE__->table("games");
   is_nullable: 0
   size: 16
 
-Home player.
+Winner uuid.
 
 =head2 winner_score
 
@@ -49,7 +49,7 @@ Home player.
   default_value: 0
   is_nullable: 0
 
-Home players score.
+Winner's score.
 
 =head2 loser_id
 
@@ -58,7 +58,7 @@ Home players score.
   is_nullable: 0
   size: 16
 
-Away player.
+Loser uuid.
 
 =head2 loser_score
 
@@ -66,7 +66,7 @@ Away player.
   default_value: 0
   is_nullable: 0
 
-Away players score.
+Loser's score.
 
 =head2 started
 
@@ -160,8 +160,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07045 @ 2016-09-01 14:31:56
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GNhVrY1oMGtZFq3g0hX64A
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2016-09-22 20:35:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:naR2yNd9PpERmNYlc129Cw
 
 __PACKAGE__->uuid_columns('games_id');
 

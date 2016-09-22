@@ -96,12 +96,12 @@ When the details were last updated.
 
 =head2 status
 
-  data_type: 'varchar'
-  default_value: 'A'
+  data_type: 'text'
+  default_value: 'Active'
   is_nullable: 0
-  size: 1
+  original: {data_type => "varchar"}
 
-A=Active, D=Deleted, S=Suspended, T=Trashed.
+Active, Deleted, Suspended, Trashed.
 
 =cut
 
@@ -153,7 +153,12 @@ __PACKAGE__->add_columns(
     original      => { default_value => \"now()" },
   },
   "status",
-  { data_type => "varchar", default_value => "A", is_nullable => 0, size => 1 },
+  {
+    data_type     => "text",
+    default_value => "Active",
+    is_nullable   => 0,
+    original      => { data_type => "varchar" },
+  },
 );
 
 =head1 PRIMARY KEY
@@ -201,8 +206,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07045 @ 2016-09-01 14:31:56
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Fdm9IhW8ma/PO1iz+4cnoQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2016-09-22 20:35:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EcYlqcwGxyvAKDRIm9yTcw
 
 __PACKAGE__->belongs_to(
   "vw_scoreboard",
