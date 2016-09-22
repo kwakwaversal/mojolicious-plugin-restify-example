@@ -22,3 +22,5 @@ nytprof.out
 # Project specific ignores
 /.vagrant
 /local
+scrabblicious.development.conf
+scrabblicious.production.conf
