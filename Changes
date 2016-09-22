@@ -3,3 +3,4 @@
 0.01  2016-09-22
   - First started repo.
   - Added before_render hook to intercepts JSON output.
+  - Adding .travis.yml. Fixes #1

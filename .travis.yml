@@ -1,0 +1,23 @@
+language: perl
+perl:
+  - "5.20"
+addons:
+  postgresql: 9.5
+env:
+  global:
+    - SL_HOST=127.0.0.1
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y postgresql-server-dev-all
+  - sudo su -c 'psql -tc "CREATE USER vagrant WITH PASSWORD \$\$password\$\$"' postgres
+  - sudo su -c 'psql -tc "CREATE DATABASE scrabblicious OWNER=vagrant"' postgres
+  - sudo su -c 'psql scrabblicious < $TRAVIS_BUILD_DIR/migrations/scrabblicious.sql' vagrant
+  - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.development.conf
+  - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.production.conf
+script:
+  - cpanm -n Carton
+  - carton install --deployment --cached
+  - prove -rl
+after_failure: "cat /home/travis/.cpanm/work/*/build.log"
+notifications:
+  email: true
