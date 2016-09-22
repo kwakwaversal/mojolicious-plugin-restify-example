@@ -6,6 +6,15 @@ use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->load_components(qw/UUIDColumns/);
 
+sub TO_JSON {
+  my $self = shift;
+
+  my %resource = $self->get_inflated_columns;
+  $resource{id} = $self->id;
+
+  return \%resource;
+}
+
 1;
 
 =head1 NAME
@@ -27,6 +36,15 @@ See L<DBIx::Class::Manual::Cookbook/STARTUP_SPEED>.
 
 L<Scrabblicious::Schema::BaseResult> inherits all methods from
 L<DBIx::Class::Core> and implements the following new ones.
+
+=head2 TO_JSON
+
+When L<Mojo::JSON> is rendering, it will try and call the C<TO_JSON> method
+on blessed references. By default, this will return the C<inflated_columns>
+for a L<DBIx::Class::Result>.
+
+If a result needs to return more tailored data, override this method in the
+result.
 
 =head1 AUTHOR
 

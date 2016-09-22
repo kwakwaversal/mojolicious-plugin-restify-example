@@ -18,7 +18,7 @@ sub under {
 sub list {
   my $c = shift;
 
-  if ($c->req->param('action') eq 'create') {
+  if ($c->req->param('action') && $c->req->param('action') eq 'create') {
     $c->respond_to(any => {format => 'html', template => 'players/create'});
     return 1;
   }
@@ -26,18 +26,22 @@ sub list {
   my $players = $c->db->resultset('Player')->search(
     {'me.status' => {'=' => [qw/A/]},},
     {
-      # prefetch => 'scoreboard',
       order_by => {-asc => [qw/me.nickname/]},
       page     => $c->api->page,
       rows     => $c->api->per_page,
     }
   );
-
-  $c->stash(players => [$players->all]);
   $c->api->pager($players->pager);
 
-  # Here we could also respon to JSON to be RESTy
-  $c->respond_to(any => {format => 'html', template => 'players/list'});
+  # Here we respond to JSON or default to HTML (we're RESTy!)
+  $c->respond_to(
+    json => {json => {players => [$players->all]}},
+    any  => {
+      players  => [$players->all],
+      format   => 'html',
+      template => 'players/list'
+    }
+  );
 }
 
 sub read {
