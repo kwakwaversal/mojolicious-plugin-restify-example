@@ -9,8 +9,11 @@ __PACKAGE__->load_components(qw/UUIDColumns/);
 sub TO_JSON {
   my $self = shift;
 
-  my %resource = $self->get_inflated_columns;
-  $resource{id} = $self->id;
+  # http://jsonapi.org/format/#fetching-resources
+  my %resource;
+  $resource{type}       = $self->result_source->name;
+  $resource{id}         = $self->id;
+  $resource{attributes} = {$self->get_inflated_columns};
 
   return \%resource;
 }

@@ -16,6 +16,7 @@ sub register {
         && exists $c->stash->{'format'}
         && $c->stash->{'format'} eq 'json')
       {
+        $args->{json}->{links}->{self} = $c->url_for->to_abs;
 
         # Don't expose information if there's an error in the JSON output (the
         # errors hash key is not a Mojo convention).
@@ -25,6 +26,14 @@ sub register {
           if ((my $pager = $c->api->pager)
             && ref $c->api->pager eq 'DBIx::Class::ResultSet::Pager')
           {
+            # http://jsonapi.org/format/#fetching-resources
+            $args->{json}->{links}->{last}
+              = $c->url_for->query(page => $pager->previous_page)->to_abs
+              if $pager->last_page;
+            $args->{json}->{links}->{next}
+              = $c->url_for->query(page => $pager->next_page)->to_abs
+              if $pager->next_page;
+
             $args->{json}->{meta}->{pager} = {
               current_page     => $pager->current_page,
               entries_per_page => $pager->entries_per_page,
@@ -71,7 +80,7 @@ Scrabblicious::Plugin::Hooks - Hook into stuff, yo!
     $c->api->pager($players->pager);
 
     $c->respond_to(
-      json => {json => {players => [$players->all]}},
+      json => {json => {data => [$players->all]}},
       any  => {
         players  => [$players->all],
         format   => 'html',
@@ -85,7 +94,9 @@ Scrabblicious::Plugin::Hooks - Hook into stuff, yo!
 L<Scrabblicious::Plugin::Hooks> is home to project-specific hooks.
 
 The primary reason this has been created is to hook into C<before_render> to
-mangle to the JSON before it is being rendered.
+mangle to the JSON before it is being rendered. Using this technique means we
+can also add some extra data to the response to keep it more in line with
+L<http://jsonapi.org/>.
 
 =head1 METHODS
 

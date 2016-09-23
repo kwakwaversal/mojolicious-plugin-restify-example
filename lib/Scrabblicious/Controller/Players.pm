@@ -5,8 +5,8 @@ sub under {
   my $c = shift;
   my $resource
     = $c->db->resultset('Player')
-    ->search({'me.players_id' => $c->stash('players_id'), status => 'A'},
-    {prefetch => 'vw_scoreboard'})->single;
+    ->search({'me.players_id' => $c->stash('players_id'), status => 'Active'})
+    ->single;
 
   $c->stash(player => $resource);
   return 1 if $resource;
@@ -35,7 +35,7 @@ sub list {
 
   # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
   $c->respond_to(
-    json => {json => {players => $c->stash->{players}}},
+    json => {json => {data => $c->stash->{players}}},
     any  => {
       players  => $c->stash->{players},
       format   => 'html',
@@ -49,28 +49,31 @@ sub read {
 
   my $player = $c->stash->{player};
 
-  # Add the highest score match details to the stash
-  if ($player->vw_scoreboard->max_score > 0) {
-    my $highscore = $c->db->resultset('Game')->search(
-      {
-        -or => [
-          -and => [
-            winner_id    => $player->id,
-            winner_score => $player->vw_scoreboard->max_score,
-          ],
-          -and => [
-            loser_id    => $player->id,
-            loser_score => $player->vw_scoreboard->max_score,
-          ],
-        ]
-      }
-    )->first;
+  # # Add the highest score match details to the stash
+  # if ($player->vw_scoreboard->max_score > 0) {
+  #   my $highscore = $c->db->resultset('Game')->search(
+  #     {
+  #       -or => [
+  #         -and => [
+  #           winner_id    => $player->id,
+  #           winner_score => $player->vw_scoreboard->max_score,
+  #         ],
+  #         -and => [
+  #           loser_id    => $player->id,
+  #           loser_score => $player->vw_scoreboard->max_score,
+  #         ],
+  #       ]
+  #     }
+  #   )->first;
+  #
+  #   $c->stash(highscore => $highscore);
+  # }
 
-    $c->stash(highscore => $highscore);
-  }
-
-  # Here we could also respon to JSON to be RESTy
-  $c->respond_to(any => {format => 'html', template => 'players/read'},);
+  # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
+  $c->respond_to(
+    json => {json => {data => $c->stash->{player}}},
+    any => {format => 'html', template => 'players/read'}
+  );
 }
 
 1;
