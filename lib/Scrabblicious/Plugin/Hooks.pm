@@ -29,7 +29,7 @@ sub register {
             # http://jsonapi.org/format/#fetching-resources
             $args->{json}->{links}->{last}
               = $c->url_for->query(page => $pager->previous_page)->to_abs
-              if $pager->last_page;
+              if $pager->previous_page;
             $args->{json}->{links}->{next}
               = $c->url_for->query(page => $pager->next_page)->to_abs
               if $pager->next_page;
