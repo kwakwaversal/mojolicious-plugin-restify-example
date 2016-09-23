@@ -5,7 +5,7 @@ sub under {
   my $c = shift;
   my $resource
     = $c->db->resultset('Player')
-    ->search({'me.players_id' => $c->stash('players_id'), status => 'Active'})
+    ->search({'me.players_id' => $c->restify->current_id, status => 'Active'})
     ->single;
 
   $c->stash(player => $resource);
