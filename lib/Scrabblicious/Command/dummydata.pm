@@ -12,7 +12,7 @@ sub run {
   GetOptionsFromArray \@args, 'g|games=i' => \(my $games = 25);
 
   my $players
-    = [$self->app->db->resultset('Player')->search({status => 'A'})->all];
+    = [$self->app->db->resultset('Player')->search({status => 'Active'})->all];
 
   # Iterate through every player and insert dummy game data
   for my $player (@$players) {
