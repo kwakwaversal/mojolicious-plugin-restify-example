@@ -10,6 +10,7 @@ sub list {
   my $params = ref $_[0] eq 'HASH' ? shift : {@_};
 
   $params->{order_by} //= {-desc => 'me.nickname'};
+  $params->{search} //= {'me.status' => {'=' => [qw/Active/]}};
 
   return $self->search(
     $params->{search},

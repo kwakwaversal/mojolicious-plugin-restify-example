@@ -8,7 +8,7 @@ sub under {
     ->search({'me.players_id' => $c->restify->current_id, status => 'Active'})
     ->single;
 
-  $c->stash(player => $resource);
+  $c->stash(resource => $resource);
   return 1 if $resource;
 
   $c->reply->not_found;
@@ -23,56 +23,15 @@ sub list {
     return 1;
   }
 
-  my $players = $c->db->resultset('Player')->list(
-    {
-      search   => {'me.status' => {'=' => [qw/Active/]}},
-      page     => $c->api->page,
-      per_page => $c->api->per_page,
-    }
-  );
-  $c->stash(players => [$players->all]);
-  $c->api->pager($players->pager);
+  my $collection = $c->db->resultset('Player')
+    ->list({page => $c->api->page, per_page => $c->api->per_page});
+  $c->stash(collection => [$collection->all]);
+  $c->api->pager($collection->pager);
 
   # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
   $c->respond_to(
-    json => {json => {data => $c->stash->{players}}},
-    any  => {
-      players  => $c->stash->{players},
-      format   => 'html',
-      template => 'players/list'
-    }
-  );
-}
-
-sub read {
-  my $c = shift;
-
-  my $player = $c->stash->{player};
-
-  # # Add the highest score match details to the stash
-  # if ($player->vw_scoreboard->max_score > 0) {
-  #   my $highscore = $c->db->resultset('Game')->search(
-  #     {
-  #       -or => [
-  #         -and => [
-  #           winner_id    => $player->id,
-  #           winner_score => $player->vw_scoreboard->max_score,
-  #         ],
-  #         -and => [
-  #           loser_id    => $player->id,
-  #           loser_score => $player->vw_scoreboard->max_score,
-  #         ],
-  #       ]
-  #     }
-  #   )->first;
-  #
-  #   $c->stash(highscore => $highscore);
-  # }
-
-  # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
-  $c->respond_to(
-    json => {json => {data => $c->stash->{player}}},
-    any => {format => 'html', template => 'players/read'}
+    json => {json => {data => $c->stash->{collection}}},
+    any => {collection => $c->stash->{collection}, format => 'html'}
   );
 }
 

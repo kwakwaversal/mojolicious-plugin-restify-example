@@ -10,7 +10,18 @@ sub delete { shift->reply->not_found }
 
 sub list { shift->reply->not_found }
 
-sub read { shift->reply->not_found }
+sub read {
+  my $c = shift;
+
+  # The resource key should be set in the derived classes
+  return $c-reply->not_found unless exists $c->stash->{resource};
+
+  # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
+  $c->respond_to(
+    json => {json   => {data => $c->stash->{resource}}},
+    any  => {format => 'html'}
+  );
+}
 
 sub update { shift->reply->not_found }
 

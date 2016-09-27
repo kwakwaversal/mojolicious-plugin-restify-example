@@ -12,7 +12,7 @@
       <div class="mini-stat clearfix bg-blue rounded">
         <span class="mini-stat-icon"><i class="fa fa-check fg-blue"></i></span>
         <div class="mini-stat-info">
-            <span class="stat"><%= $player->vw_scoreboard->wins %></span>
+            <span class="stat"><%= $resource->stat ? $resource->stat->wins : 0 %></span>
             <p>Total wins</p>
         </div>
       </div>
@@ -22,7 +22,7 @@
       <div class="mini-stat clearfix bg-light-blue rounded">
         <span class="mini-stat-icon"><i class="fa fa-close fg-light-blue"></i></span>
         <div class="mini-stat-info">
-            <span class="stat"><%= $player->vw_scoreboard->losses %></span>
+            <span class="stat"><%= $resource->stat ? $resource->stat->losses : 0 %></span>
             <p>Total losses</p>
         </div>
       </div>
@@ -32,7 +32,7 @@
       <div class="mini-stat clearfix bg-red rounded">
         <span class="mini-stat-icon"><i class="fa fa-percent fg-red"></i></span>
         <div class="mini-stat-info">
-            <span class="stat"><%= $player->vw_scoreboard->avg_score %></span>
+            <span class="stat"><%= $resource->stat ? $resource->stat->avg_score : 0 %></span>
             <p>Average score</p>
         </div>
       </div>
@@ -42,7 +42,7 @@
       <div class="mini-stat clearfix bg-green rounded">
         <span class="mini-stat-icon"><i class="fa fa-trophy fg-green"></i></span>
         <div class="mini-stat-info">
-          <span class="stat"><%= $player->vw_scoreboard->max_score %></span>
+          <span class="stat"><%= $resource->stat ? $resource->stat->max_score : 0 %></span>
             <p>Highest score</p>
         </div>
       </div>
@@ -52,37 +52,26 @@
 
   <div class="row">
     <div class="col-sm-12">
-      <div class="well col-md-6">
-        <h3>Hello, <%= $player->forename %>!</h3>
-        <p>Joined: <%= $player->created %></p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-      </div>
-      <div class="well col-md-6">
-        % if (stash 'highscore') {
+      <div class="well col-md-12">
+        <h3>Hello, <%= $resource->forename %>!</h3>
+        <p>Joined: <%= $resource->created %></p>
+
+        % if ($resource->stat) {
           <h3>Highest score</h3>
-          % if ($highscore->winner_id eq $player->id) {
-            <p>Scored: <%= $highscore->winner_score %></p>
-            <p>Opponent: <%= $highscore->loser->nickname %> (game was won)</p>
-            <p>Played: <%= $highscore->finished %></p>
-          % }
-          % else {
-            <p>Scored: <%= $highscore->loser_score %></p>
-            <p>Opponent: <%= $highscore->winner->nickname %> (game was lost)</p>
-            <p>Played: <%= $highscore->finished %></p>
-          % }
+          <p><%= $resource->stat->max_score %></p>
         % }
         % else {
           <h3>Highest score</h3>
           <p>Your high score has not been set yet. Play some games!</p>
         % }
+
       </div>
     </div>
   </div>
 </section>
 
 <div class="row">
-  <h2><i class="fa fa-edit"></i> Edit player</h2>
+  <h2><i class="fa fa-edit"></i> Edit player </h2>
 
 %= form_for '' => (method => 'POST') => begin
   <div class="col-md-12">
@@ -90,19 +79,19 @@
       <div class="form-group col-md-6">
       %= label_for forename => 'Forename'
       <br>
-      %= text_field forename => $player->forename, class => 'form-control'
+      %= text_field forename => $resource->forename, class => 'form-control'
       </div>
 
       <div class="form-group col-md-6">
       %= label_for surname => 'Surname'
       <br>
-      %= text_field surname => $player->surname, class => 'form-control'
+      %= text_field surname => $resource->surname, class => 'form-control'
       </div>
 
       <div class="form-group col-md-6">
       %= label_for nickname => 'Nickname'
       <br>
-      %= text_field nickname => $player->nickname, class => 'form-control'
+      %= text_field nickname => $resource->nickname, class => 'form-control'
       </div>
     </div>
 
@@ -110,13 +99,13 @@
       <div class="form-group col-md-6">
       %= label_for tel_no => 'Tel no'
       <br>
-      %= text_field tel_no => $player->tel_no, class => 'form-control'
+      %= text_field tel_no => $resource->tel_no, class => 'form-control'
       </div>
 
       <div class="form-group col-md-6">
       %= label_for email => 'E-mail'
       <br>
-      %= text_field email => $player->email, class => 'form-control'
+      %= text_field email => $resource->email, class => 'form-control'
       </div>
     </div>
 
