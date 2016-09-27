@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
   # Provisioning with a shell script as a privileged user.
   config.vm.provision "shell", inline: <<-'SHELL'
     apt-get update
-    apt-get install --no-install-recommends -yq build-essential libpq-dev postgresql-9.4 postgresql-client-9.4 tmux
+    apt-get install --no-install-recommends -yq build-essential libpq-dev postgresql-9.4 postgresql-client-9.4 postgresql-contrib-9.4 tmux
     wget --quiet -O - https://cpanmin.us | perl - App::cpanminus
     cpanm Carton
   SHELL
@@ -62,6 +62,7 @@ Vagrant.configure("2") do |config|
     sudo su -c 'psql -tc "DROP USER IF EXISTS vagrant"' postgres
     sudo su -c 'psql -tc "CREATE USER vagrant WITH PASSWORD \$\$password\$\$"' postgres
     sudo su -c 'psql -tc "CREATE DATABASE scrabblicious OWNER=vagrant"' postgres
+    sudo su -c 'psql -tc "CREATE EXTENSION IF NOT EXISTS pgcrypto" scrabblicious' postgres
     sudo su -c 'PGPASSWORD=password psql -U vagrant -h localhost scrabblicious < /home/vagrant/restify/migrations/scrabblicious.sql' postgres
     cp -a ~/restify/scrabblicious.sample.conf ~/restify/scrabblicious.development.conf
     cp -a ~/restify/scrabblicious.sample.conf ~/restify/scrabblicious.production.conf

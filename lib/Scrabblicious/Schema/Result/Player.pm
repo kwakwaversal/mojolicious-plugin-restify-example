@@ -36,6 +36,13 @@ __PACKAGE__->table("players");
 
 Primary key. UUIDs are generally better for futureproofing.
 
+=head2 stats_id
+
+  data_type: 'uuid'
+  is_foreign_key: 1
+  is_nullable: 1
+  size: 16
+
 =head2 forename
 
   data_type: 'text'
@@ -108,6 +115,8 @@ Active, Deleted, Suspended, Trashed.
 __PACKAGE__->add_columns(
   "players_id",
   { data_type => "uuid", is_nullable => 0, size => 16 },
+  "stats_id",
+  { data_type => "uuid", is_foreign_key => 1, is_nullable => 1, size => 16 },
   "forename",
   {
     data_type   => "text",
@@ -205,21 +214,48 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 stat
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2016-09-22 20:35:41
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EcYlqcwGxyvAKDRIm9yTcw
+Type: belongs_to
+
+Related object: L<Scrabblicious::Schema::Result::Stat>
+
+=cut
 
 __PACKAGE__->belongs_to(
-  "vw_scoreboard",
-  "Scrabblicious::Schema::Result::VwScoreboard",
-  { players_id => "players_id" },
+  "stat",
+  "Scrabblicious::Schema::Result::Stat",
+  { stats_id => "stats_id" },
   {
     is_deferrable => 0,
-    join_type     => "RIGHT OUTER",
-    on_delete     => "CASCADE",
+    join_type     => "LEFT",
+    on_delete     => "SET NULL",
     on_update     => "CASCADE",
   },
 );
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2016-09-27 21:06:25
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Doee29DzJ9ACG/2KJDQtew
+
+sub highscore {
+  my $self = shift;
+
+  my $highscore = $self->result_source->schema->resultset('Game')->search(
+    {
+      -or => [
+        -and => [winner_id => $self->id],
+        -and => [loser_id  => $self->id],
+      ]
+    },
+    {
+      select   => ['games_id', {greatest => [qw/winner_score loser_score/]}],
+      as       => ['games_id', 'score'],
+    }
+  )->first;
+
+  return $highscore;
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

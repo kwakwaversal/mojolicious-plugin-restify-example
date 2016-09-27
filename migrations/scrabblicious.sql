@@ -1,6 +1,80 @@
 -- 1 up
+SET CHECK_FUNCTION_BODIES TO FALSE;
+
+CREATE OR REPLACE FUNCTION "trig_stats_update" ()
+RETURNS trigger AS
+$BODY$
+-- Trigger updating the stats table when games are inserted, updated or deleted.
+--
+DECLARE
+
+BEGIN
+  IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+    PERFORM func_update_stats(ARRAY[NEW.winner_id, NEW.loser_id]::uuid[]);
+    RETURN NEW;
+  ELSIF TG_OP = 'DELETE' THEN
+    PERFORM func_update_stats(ARRAY[OLD.winner_id, OLD.loser_id]::uuid[]);
+    RETURN OLD;
+  END IF;
+END;
+$BODY$
+	LANGUAGE PLpgSQL
+	CALLED ON NULL INPUT
+	IMMUTABLE
+	EXTERNAL SECURITY DEFINER;
+
+
+
+
+CREATE OR REPLACE FUNCTION "func_update_stats" (IN player_ids uuid[])
+RETURNS bool AS
+$BODY$
+-- Updates the stats table based on the array of players_id passed.
+--
+DECLARE
+  player_id     uuid;
+  r             vw_stats%rowtype; -- or record
+  new_stats_id  uuid;
+BEGIN
+  FOREACH player_id IN ARRAY $1
+  LOOP
+    -- In postgres 9.5 this could be 'ON CONFLICT DO' which is UPSERT. I
+    -- cannot do that because TravisCI is only on 9.4.
+    DELETE FROM stats
+      WHERE stats_id=(SELECT stats_id FROM players WHERE players_id=player_id);
+
+    SELECT INTO r * FROM vw_stats
+      WHERE players_id=player_id;
+    IF FOUND THEN
+      new_stats_id = gen_random_uuid();
+      INSERT INTO stats(stats_id, games, wins, losses, avg_score, max_score, updated)
+        VALUES(new_stats_id, r.games, r.wins, r.losses, r.avg_score, r.max_score, NOW());
+
+      UPDATE players SET stats_id=new_stats_id WHERE players_id=player_id;
+    ELSE
+      RAISE NOTICE 'Unable to find % in vw_stats', player_id;
+    END IF;
+  END LOOP;
+
+  RETURN true;
+END;
+$BODY$
+	LANGUAGE PLpgSQL
+	CALLED ON NULL INPUT
+	VOLATILE
+	EXTERNAL SECURITY DEFINER;
+
+
+
+
+SET CHECK_FUNCTION_BODIES TO TRUE;
+
+
+DROP TABLE IF EXISTS "players" CASCADE;
+
 CREATE TABLE "players" (
 	"players_id" uuid NOT NULL,
+	"stats_id" uuid,
 	"forename" varchar NOT NULL,
 	"surname" varchar NOT NULL,
 	"nickname" varchar NOT NULL,
@@ -8,9 +82,9 @@ CREATE TABLE "players" (
 	"tel_no" varchar NOT NULL,
 	"created" timestamp with time zone NOT NULL DEFAULT NOW(),
 	"updated" timestamp with time zone NOT NULL DEFAULT NOW(),
-	"status" varchar(1) NOT NULL DEFAULT 'A',
+	"status" varchar NOT NULL DEFAULT 'Active',
 	CONSTRAINT "pk_players" PRIMARY KEY("players_id"),
-	CONSTRAINT "con_players_status" CHECK(status IN ('A', 'D', 'S', 'T'))
+	CONSTRAINT "con_players_status" CHECK(status IN ('Active', 'Deleted', 'Suspended', 'Trashed'))
 );
 
 COMMENT ON TABLE "players" IS 'Player details (including contact information).';
@@ -31,7 +105,7 @@ COMMENT ON COLUMN "players"."created" IS 'When the member was created.';
 
 COMMENT ON COLUMN "players"."updated" IS 'When the details were last updated.';
 
-COMMENT ON COLUMN "players"."status" IS 'A=Active, D=Deleted, S=Suspended, T=Trashed.';
+COMMENT ON COLUMN "players"."status" IS 'Active, Deleted, Suspended, Trashed.';
 
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('0CA4C5E0-C822-3799-4521-1BF02543E702','Paul','Williams','Kwakwaversal','kwakwaversal@gmail.com','07763 837 745');
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('037B2FB6-6573-0F33-B5EA-D902413FE805','Demetria','Barr','Rylee','eu@nec.org','(0111) 172 1409');
@@ -134,6 +208,9 @@ INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('DB8E7302-B6C6-951D-187D-225B575D9264','Nelle','Ingram','Dieter','augue@dapibusquamquis.org','056 8774 0436');
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('09F7CC96-5CCC-9893-67F1-2AA92C6A4307','Shea','Jarvis','Austin','nibh@acmetus.com','(027) 7843 1961');
 
+
+DROP TABLE IF EXISTS "games" CASCADE;
+
 CREATE TABLE "games" (
 	"games_id" uuid NOT NULL,
 	"winner_id" uuid NOT NULL,
@@ -149,28 +226,51 @@ CREATE INDEX "idx_games_winner_id" ON "games" (
 	"winner_id"
 );
 
+
 CREATE INDEX "idx_games_loser_id" ON "games" (
 	"loser_id"
 );
 
+
+CREATE TRIGGER "trig_games_change" AFTER INSERT OR UPDATE OR DELETE
+	ON "games" FOR EACH ROW
+	EXECUTE PROCEDURE "trig_stats_update"();
+
+
 COMMENT ON TABLE "games" IS 'Results of all the scrabble games.';
 
-COMMENT ON COLUMN "games"."winner_id" IS 'Home player.';
+COMMENT ON COLUMN "games"."winner_id" IS 'Winner uuid.';
 
-COMMENT ON COLUMN "games"."winner_score" IS 'Home players score.';
+COMMENT ON COLUMN "games"."winner_score" IS 'Winner''s score.';
 
-COMMENT ON COLUMN "games"."loser_id" IS 'Away player.';
+COMMENT ON COLUMN "games"."loser_id" IS 'Loser uuid.';
 
-COMMENT ON COLUMN "games"."loser_score" IS 'Away players score.';
+COMMENT ON COLUMN "games"."loser_score" IS 'Loser''s score.';
 
 COMMENT ON COLUMN "games"."started" IS 'When the game was started.';
 
 COMMENT ON COLUMN "games"."finished" IS 'When the game finished.';
 
-INSERT INTO games(games_id,winner_id,winner_score,loser_id,loser_score)
-  VALUES('0ca4c5e0-c822-5555-4521-1bf02543e702','0ca4c5e0-c822-3799-4521-1bf02543e702',350,'037b2fb6-6573-0f33-b5ea-d902413fe805',270);
-INSERT INTO games(games_id,winner_id,winner_score,loser_id,loser_score)
-  VALUES('0ca4c5e0-c822-1111-4521-1bf02543e702','037b2fb6-6573-0f33-b5ea-d902413fe805',270,'0ca4c5e0-c822-3799-4521-1bf02543e702',350);
+DROP TABLE IF EXISTS "stats" CASCADE;
+
+CREATE TABLE "stats" (
+	"stats_id" uuid NOT NULL DEFAULT gen_random_uuid(),
+	"games" int4 NOT NULL DEFAULT 0,
+	"wins" int4 NOT NULL DEFAULT 0,
+	"losses" int4 NOT NULL DEFAULT 0,
+	"avg_score" int4 NOT NULL DEFAULT 0,
+	"max_score" int4 NOT NULL DEFAULT 0,
+	"updated" timestamp with time zone NOT NULL DEFAULT NOW(),
+	CONSTRAINT "pk_stats" PRIMARY KEY("stats_id")
+);
+
+
+ALTER TABLE "players" ADD CONSTRAINT "fk_players_to_stats" FOREIGN KEY ("stats_id")
+	REFERENCES "stats"("stats_id")
+	MATCH SIMPLE
+	ON DELETE SET NULL
+	ON UPDATE CASCADE
+	NOT DEFERRABLE;
 
 ALTER TABLE "games" ADD CONSTRAINT "fk_games_winner_to_players" FOREIGN KEY ("winner_id")
 	REFERENCES "players"("players_id")
@@ -186,7 +286,8 @@ ALTER TABLE "games" ADD CONSTRAINT "fk_games_loser_to_players" FOREIGN KEY ("los
 	ON UPDATE NO ACTION
 	NOT DEFERRABLE;
 
-CREATE OR REPLACE VIEW "vw_scoreboard" AS
+
+CREATE OR REPLACE VIEW "vw_stats" AS
 	SELECT
   players_id,
   COUNT(*) AS games,
@@ -201,7 +302,10 @@ JOIN
 GROUP BY
   1;
 
+COMMENT ON VIEW "vw_stats" IS 'Used to help build the stats table.';
+
 -- 1 down
--- DROP TABLE IF EXISTS "players" CASCADE;
 -- DROP TABLE IF EXISTS "games" CASCADE;
--- DROP VIEW IF EXISTS "vw_scoreboard" CASCADE;
+-- DROP TABLE IF EXISTS "players" CASCADE;
+-- DROP TABLE IF EXISTS "stats" CASCADE;
+-- DROP VIEW IF EXISTS "vw_stats" CASCADE;
