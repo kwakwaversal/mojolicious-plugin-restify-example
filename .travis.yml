@@ -7,8 +7,10 @@ env:
   global:
     - SL_HOST=127.0.0.1
 before_install:
+  - sudo /etc/init.d/postgresql stop
   - sudo apt-get -qq update
   - sudo apt-get install -y postgresql-server-dev-all postgresql-contrib
+  - sudo /etc/init.d/postgresql start
   - sudo su -c 'psql -tc "CREATE USER vagrant WITH PASSWORD \$\$password\$\$"' postgres
   - sudo su -c 'psql -tc "CREATE DATABASE scrabblicious OWNER=vagrant"' postgres
   - sudo su -c 'PGPASSWORD=password psql -U vagrant -h localhost scrabblicious < $TRAVIS_BUILD_DIR/migrations/scrabblicious.sql' postgres
