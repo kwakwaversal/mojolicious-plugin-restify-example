@@ -1,5 +1,8 @@
 -----------------------------------------------------
 
+0.04  2016-09-29
+  - Abstracted the resource element lookups.
+
 0.03  2016-09-24
   - Improved SQL by using trigger to generate stats after each game.
 

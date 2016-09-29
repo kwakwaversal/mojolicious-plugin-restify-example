@@ -22,6 +22,13 @@ sub list {
   );
 }
 
+sub resource {
+  my $self = shift;
+  my $params = ref $_[0] eq 'HASH' ? shift : {@_};
+  return $self->search(
+    {'me.players_id' => $params->{current_id}, status => 'Active'});
+}
+
 1;
 
 =head1 NAME
@@ -36,6 +43,13 @@ Scrabblicious::Schema::ResultSet::Player
 
 L<Scrabblicious::Schema::ResultSet::Player> inherits all methods from
 L<Scrabblicious::Schema::BaseResultSet> and implements the following new ones.
+
+=head2 resource
+
+  my $resource = $c->db->resultset($c->resultset)
+    ->resource({current_id => $c->restify->current_id})->single;
+
+Returns the search to use when looking up a resource element.
 
 =head1 SEE ALSO
 

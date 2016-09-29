@@ -1,8 +1,25 @@
 package Scrabblicious::Controller;
 use Mojo::Base 'Mojolicious::Controller';
 
-# Default under returns 1 to continue the dispatch chain
-sub under { 1 }
+has lookup_resource => 1;
+has resultset       => undef;
+
+sub under {
+  my $c = shift;
+
+  # Default under returns 1 to continue the dispatch chain
+  return 1 unless $c->lookup_resource && defined $c->resultset;
+
+  # Look up the resource element using our DBIx::Class::ResultSet method
+  my $resource = $c->db->resultset($c->resultset)
+    ->resource({current_id => $c->restify->current_id})->single;
+
+  $c->stash(resource => $resource);
+  return 1 if $resource;
+
+  $c->reply->not_found;
+  return 0;
+}
 
 sub create { shift->reply->not_found }
 
@@ -14,7 +31,7 @@ sub read {
   my $c = shift;
 
   # The resource key should be set in the derived classes
-  return $c-reply->not_found unless exists $c->stash->{resource};
+  return $c->reply->not_found unless exists $c->stash->{resource};
 
   # Here we respond to JSON if requested, or default to HTML (we're SO RESTy!)
   $c->respond_to(
@@ -46,7 +63,24 @@ dispatches your routes to.
 L<Scrabblicious::Controller> inherits all attributes from
 L<Mojolicious::Controller> and implements the following new ones.
 
-Add your own attributes here.
+=head2 lookup_resource
+
+  sub under {
+    my $c = shift;
+    $c->lookup_resource(1);
+    $c->resultset('Player');
+    return $c->SUPER::under();
+  }
+
+If true, attempts to look up a resource in the C<under> method. Must also have
+the C<resultset> attribute set for the controller you want to look up.
+
+=head2 resultset
+
+The name of the C<Scrabblicious> resultset this controller is associated with.
+
+This is specific to this example, and is used with L<DBIx::Class::ResultSet>
+when trying to find a resource element for a collection.
 
 =head1 METHODS
 

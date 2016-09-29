@@ -1,19 +1,7 @@
 package Scrabblicious::Controller::Players;
 use Mojo::Base 'Scrabblicious::Controller';
 
-sub under {
-  my $c = shift;
-  my $resource
-    = $c->db->resultset('Player')
-    ->search({'me.players_id' => $c->restify->current_id, status => 'Active'})
-    ->single;
-
-  $c->stash(resource => $resource);
-  return 1 if $resource;
-
-  $c->reply->not_found;
-  return 0;
-}
+has resultset => 'Player';
 
 sub list {
   my $c = shift;
@@ -56,26 +44,7 @@ L<Scrabblicious::Controller> and implements the following new ones.
 L<Scrabblicious::Controller::Players> inherits all methods from
 L<Scrabblicious::Controller> and implements the following new ones.
 
-=head2 create
-
-Inherited from L<Scrabblicious::Controller>.
-
-=head2 delete
-
-Inherited from L<Scrabblicious::Controller>.
-
 =head2 list
-
-=head2 read
-
-=head2 under
-
-Called for every instance method apart from list and create.
-
-This is a good place to look up the :uuid for the resource and have it available
-to the rest of the chain.
-
-=head2 update
 
 =head1 SEE ALSO
 
