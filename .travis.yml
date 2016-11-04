@@ -22,6 +22,6 @@ install:
   - carton install --deployment --cached
 script:
   - carton exec prove -rl
-after_failure: "cat /home/travis/.cpanm/work/*/build.log"
+after_failure: "cat ~/.cpanm/build.log"
 notifications:
   email: true
