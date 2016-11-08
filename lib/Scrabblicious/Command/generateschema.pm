@@ -5,7 +5,7 @@ use DBIx::Class::Schema::Loader qw/make_schema_at/;
 use FindBin;
 use Getopt::Long qw(GetOptionsFromArray :config no_auto_abbrev);
 
-has description => 'Insert dummy game data for every player';
+has description => 'Generate DBIC schema from database';
 has usage => sub { shift->extract_usage };
 
 # Added result_base_class on recommendation from the DBIC cookbook to improve
@@ -14,7 +14,7 @@ has usage => sub { shift->extract_usage };
 # Additionally it makes it easier to load new components without rebuilding the
 # schema.
 #
-# http://search.cpan.org/~ribasushi/DBIx-Class-0.08250/lib/DBIx/Class/Manual/Cookbook.pod#STARTUP_SPEED
+# https://metacpan.org/pod/distribution/DBIx-Class/lib/DBIx/Class/Manual/Cookbook.pod#STARTUP-SPEED
 
 sub run {
   my ($self, @args) = @_;
