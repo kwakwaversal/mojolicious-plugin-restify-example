@@ -1,0 +1,25 @@
+## Look locally for files
+file_client: local
+
+## Required to use gitfs in masterless mode
+gitfs_provider: gitpython
+
+## For including salt-formulas (https://github.com/saltstack-formulas)
+fileserver_backend:
+  - roots
+  - git
+
+## https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html
+gitfs_remotes:
+  - https://github.com/saltstack-formulas/postgres-formula
+  - https://github.com/kwakwaversal/saltstack-formula-plenv
+
+## Where your salt states & files are located
+file_roots:
+  base:
+    - /home/vagrant/restify/saltstack/salt
+
+## Where your pillar data is located
+pillar_roots:
+  base:
+    - /home/vagrant/restify/saltstack/pillar
