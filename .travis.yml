@@ -1,9 +1,8 @@
-dist: trusty
 language: perl
 perl:
-  - "5.20"
+  - "5.24"
 addons:
-  postgresql: 9.5
+  postgresql: 9.4
 env:
   global:
     - SL_HOST=127.0.0.1
@@ -15,11 +14,10 @@ before_install:
   - psql -c "CREATE EXTENSION IF NOT EXISTS pgcrypto" scrabblicious -U postgres
   - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.development.conf
   - cp -a $TRAVIS_BUILD_DIR/scrabblicious.sample.conf $TRAVIS_BUILD_DIR/scrabblicious.production.conf
-  - cp -a $TRAVIS_BUILD_DIR/migrations/scrabblicious.sql /tmp/scrabblicious.sql
-  - PGPASSWORD=password psql -U vagrant -h localhost scrabblicious < /tmp/scrabblicious.sql
 install:
   - cpanm -n Carton
   - carton install --deployment --cached
+  - carton exec perl script/scrabblicious migrate --latest
 script:
   - carton exec prove -rl
 after_failure: "cat ~/.cpanm/build.log"
