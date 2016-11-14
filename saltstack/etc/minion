@@ -12,6 +12,7 @@ fileserver_backend:
 ## https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html
 gitfs_remotes:
   - https://github.com/saltstack-formulas/postgres-formula
+  - https://github.com/kwakwaversal/saltstack-formula-ndenv
   - https://github.com/kwakwaversal/saltstack-formula-plenv
 
 ## Where your salt states & files are located
