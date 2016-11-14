@@ -11,3 +11,5 @@ restify-migrate:
     - name: carton exec perl script/scrabblicious migrate --latest
     - cwd: {{ map.folder }}
     - runas: {{ map.user }}
+    - require:
+      - cmd: restify-carton
