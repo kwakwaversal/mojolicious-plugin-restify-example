@@ -305,7 +305,7 @@ GROUP BY
 COMMENT ON VIEW "vw_stats" IS 'Used to help build the stats table.';
 
 -- 1 down
--- DROP TABLE IF EXISTS "games" CASCADE;
--- DROP TABLE IF EXISTS "players" CASCADE;
--- DROP TABLE IF EXISTS "stats" CASCADE;
--- DROP VIEW IF EXISTS "vw_stats" CASCADE;
+DROP TABLE IF EXISTS "games" CASCADE;
+DROP TABLE IF EXISTS "players" CASCADE;
+DROP TABLE IF EXISTS "stats" CASCADE;
+DROP VIEW IF EXISTS "vw_stats" CASCADE;
