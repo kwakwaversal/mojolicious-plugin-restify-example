@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  %= stylesheet '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css';
+  %= stylesheet '/static/css/style.css';
+  %= stylesheet '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css';
+
+  %= javascript '//code.jquery.com/jquery-1.12.4.min.js';
+  %= javascript '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js';
+  %= javascript '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js';
+  %= javascript '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone.js';
+  %= javascript '//cdnjs.cloudflare.com/ajax/libs/backbone.radio/2.0.0/backbone.radio.js';
+  %= javascript '//cdnjs.cloudflare.com/ajax/libs/backbone.marionette/3.1.0/backbone.marionette.js';
+  %= javascript '/static/js/build/bundle.js';
+</head>
+
+<body>
+  <div class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a href="<%= url_for 'players_list' %>">
+          <h3> <i class="fa fa-language"></i> Scrabblicious</h3>
+        </a>
+      </div>
+      <div class="navbar-collapse collapse" id="navbar-main">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="<%= url_for 'players_list' %>"><i class="fa fa-users"></i> Players </a></li>
+          <li><a href="<%= url_for('players_create')->query(action => 'create') %>"><i class="fa fa-user-plus"></i> Add player</i></a></li>
+          <li><a href="<%= url_for 'leaderboards_list' %>"><i class="fa fa-trophy"></i> Leaderboards</a></li>
+        </ul>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="container" class="container">
+    <div class="row">
+      % if (stash 'message') {
+      <!-- To be used for alert/confirmation messages -->
+      <div class="alert alert-<%= stash 'level' %>">
+        <button type="button" class="close alert-dismissible" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>
+          <%= stash 'message' %>
+        </strong>
+      </div>
+      % }
+      % if (flash 'message') {
+      <!-- To be used for alert/confirmation messages -->
+      <div class="alert alert-<%= flash 'level' %>">
+        <button type="button" class="close alert-dismissible" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>
+          <%= flash 'message' %>
+        </strong>
+      </div>
+      % }
+      <%= content %>
+    </div>
+  </div>
+</body>
+</html>

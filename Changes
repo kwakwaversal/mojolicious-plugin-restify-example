@@ -3,6 +3,7 @@
 0.05  2016-10-14
   - Added Mojo command for migrating SQL.
   - Using saltstack for deployment.
+  - Installing ndenv salt formula for installing node.
 
 0.04  2016-09-29
   - Abstracted the resource element lookups.

@@ -1,4 +1,4 @@
-% layout 'backbone';
+% layout 'default';
 % title 'Scrabblicious | Because players like to play with words';
 
 <div class="row">
@@ -63,16 +63,3 @@
   % }
 </tbody>
 </table>
-
-<script type="text/template" id="base-tmpl">
-  <div class="header">header</div>
-  <div class="content">
-    <%= content() %>
-  </div>
-  <div class="footer">footer</div>
-</script>
-
-<script type="text/template" id="special-tmpl">
-  <h1>Special View</h1>
-  <span><%= textOnlyFromSpecialView %></span>
-</script>

@@ -1,0 +1,18 @@
+{
+  "name": "scrabblicious",
+  "author": "Paul Williams <kwakwa@cpan.org>",
+  "version": "0.0.1",
+  "description": "Mojolicious::Plugin::Restify example.",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@types/backbone": "^1.3.33",
+    "@types/backbone.marionette": "0.0.19",
+    "@types/underscore": "^1.7.33",
+    "ts-loader": "^1.2.1",
+    "typescript": "^2.0.9",
+    "webpack": "^1.13.3",
+    "webpack-livereload-plugin": "^0.9.0"
+  }
+}
