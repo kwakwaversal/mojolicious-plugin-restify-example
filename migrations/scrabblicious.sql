@@ -107,7 +107,7 @@ COMMENT ON COLUMN "players"."updated" IS 'When the details were last updated.';
 
 COMMENT ON COLUMN "players"."status" IS 'Active, Deleted, Suspended, Trashed.';
 
-INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('0CA4C5E0-C822-3799-4521-1BF02543E702','Paul','Williams','Kwakwaversal','kwakwaversal@gmail.com','07763 837 745');
+INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('0CA4C5E0-C822-3799-4521-1BF02543E702','Paul','Williams','Kwakwaversal','kwakwa@cpan.org','07777 555 555');
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('037B2FB6-6573-0F33-B5EA-D902413FE805','Demetria','Barr','Rylee','eu@nec.org','(0111) 172 1409');
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('87431F35-F5F8-8642-D1B2-35C8880016D0','Karina','Washington','Isabelle','Aenean@fermentumfermentum.com','0800 1111');
 INSERT INTO "players" (players_id,forename,surname,nickname,email,tel_no) VALUES ('F9E93A6A-72BE-6B68-3836-E71B57662A0B','Zena','Manning','Amela','Duis.elementum@metus.co.uk','070 1525 9341');
