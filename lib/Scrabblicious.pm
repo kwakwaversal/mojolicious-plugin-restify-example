@@ -43,7 +43,7 @@ sub startup {
   $self->helper(db => sub { $self->app->schema });
 
   # Plugins
-  $self->plugin($_) for qw/Config Restify/;
+  $self->plugin($_) for qw/Config Restify PODRenderer/;
   $self->plugin("Scrabblicious::Plugin::$_") for qw/API Hooks/;
 
   # Hooks
@@ -60,6 +60,12 @@ sub startup {
 
   # Sets up CRUD routes using Mojolicious::Plugin::Restify
   $self->restify->routes($r, $self->restify_routes, {over => 'uuid'});
+
+  $self->restify->routes(
+    $self->routes,
+    ['accounts', ['accounts/invoices' => {over => 'uuid'}]],
+    {over => 'int'}
+  );
 }
 
 1;
